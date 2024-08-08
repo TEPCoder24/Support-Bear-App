@@ -52,7 +52,7 @@ def downloaded():
         file.close()
 
 with tab3:
-    with open('Support Bear.exe', 'rb') as download_file, open('Download_number.txt', 'r') as number_file:
+    with open('Support.Bear.exe', 'rb') as download_file, open('Download_number.txt', 'r') as number_file:
         num_lines = number_file.readlines()
         num = len(num_lines)
         st.header('Download', anchor=False)
