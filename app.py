@@ -1,5 +1,5 @@
 import streamlit as st
-import time
+import requests
 
 st.title('Support Bear', anchor=False)
 
@@ -44,6 +44,47 @@ with tab2:
     with report_tab:
         st.write('The report tab keeps track of all your daily checklist entries, and weekly reports will be created to show you which days you experienced your best and worst mood change. Days where you have your most positive mood change will be highlighted pink.')
 
+def download_release_asset(owner, repo, tag, asset_name, output_path):
+    # GitHub API URL for the releases
+    api_url = f"https://api.github.com/repos/{owner}/{repo}/releases/tags/{tag}"
+    
+    # Send a request to the GitHub API
+    response = requests.get(api_url)
+    response.raise_for_status()
+    
+    # Parse the JSON response to find the asset
+    release_info = response.json()
+    assets = release_info.get('assets', [])
+    
+    # Find the asset URL by name
+    asset_url = None
+    for asset in assets:
+        if asset['name'] == asset_name:
+            asset_url = asset['browser_download_url']
+            break
+    
+    if not asset_url:
+        raise ValueError(f"Asset '{asset_name}' not found in release '{tag}'")
+    
+    # Download the asset
+    download_response = requests.get(asset_url, stream=True)
+    download_response.raise_for_status()
+    
+    # Write the asset to a file
+    with open(output_path, 'wb') as f:
+        for chunk in download_response.iter_content(chunk_size=8192):
+            f.write(chunk)
+
+    print(f"Downloaded {asset_name} to {output_path}")
+
+# Example usage
+owner = 'TEPCoder24'
+repo = 'Support-Bear-App'
+tag = 'v1'
+asset_name = 'Support.Bear.exe'
+output_path = 'Support.Bear.exe'
+
+download_release_asset(owner, repo, tag, asset_name, output_path)
 
 def downloaded():
     st.balloons()
@@ -52,7 +93,7 @@ def downloaded():
         file.close()
 
 with tab3:
-    with open('Support.Bear.exe', 'rb') as download_file, open('Download_number.txt', 'r') as number_file:
+    with open('Support Bear.exe', 'rb') as download_file, open('Download_number.txt', 'r') as number_file:
         num_lines = number_file.readlines()
         num = len(num_lines)
         st.header('Download', anchor=False)
