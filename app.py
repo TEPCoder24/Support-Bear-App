@@ -97,6 +97,6 @@ with tab3:
         num_lines = number_file.readlines()
         num = len(num_lines)
         st.header('Download', anchor=False)
-        st.subheader('Download for Windows', divider='red', anchor=False)
+        st.subheader('Download for Windows', divider=False, anchor=False)
         download_windows = st.download_button('Download for Windows', data=download_file, file_name='Support Bear.exe', on_click=downloaded)
         st.write(f'Total downloads: {num}')
